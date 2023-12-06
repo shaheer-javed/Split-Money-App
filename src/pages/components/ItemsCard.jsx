@@ -9,20 +9,63 @@ import {
   Autocomplete,
 } from "@mui/material";
 
-import DeleteIcon from "@mui/icons-material/Delete";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import SingleItemBox from "./SingleItemBox";
+import { useEffect, useState } from "react";
 
-function ItemsCard() {
+function ItemsCard({ totalPrice, SetTotalPrice }) {
+  const [items, setItems] = useState([
+    { id: crypto.randomUUID(), item: "", amount: 0, name: "" },
+  ]);
+
+  const addItem = () => {
+    const newItem = {
+      id: crypto.randomUUID(),
+      item: "",
+      amount: 0,
+      name: "",
+    };
+    setItems((prevItems) => {
+      return [...prevItems, newItem];
+    });
+  };
+
+  const deleteItem = (id) => {
+    const filteredItems = items.filter((item) => item.id !== id);
+    setItems(filteredItems);
+  };
+
+  useEffect(() => {
+    const newItemTotalAmount = items.reduce(
+      (total, item) => total + parseInt(item.amount),
+      0
+    );
+    console.log(newItemTotalAmount);
+    SetTotalPrice(newItemTotalAmount);
+  }, [items]);
+
   return (
-    <Container maxWidth="md" pt="2">
+    <Container maxWidth="md" sx={{ mt: 2 }}>
       <Card variant="outlined">
         <CardContent>
-          <SingleItemBox />
+          {items.map((item, index) => {
+            return (
+              <SingleItemBox
+                key={item.id}
+                item={item}
+                index={index}
+                setItems={setItems}
+                deleteItem={deleteItem}
+                SetTotalPrice={SetTotalPrice}
+              />
+            );
+          })}
         </CardContent>
         <CardActions>
-          <Button color="primary">Add Items</Button>
+          <Button color="primary" onClick={addItem}>
+            Add Items
+          </Button>
         </CardActions>
         <hr />
 
@@ -34,7 +77,7 @@ function ItemsCard() {
           </Grid>
           <Grid>
             <Typography variant="h6" color="error">
-              Total Amount
+              Total Amount: ${totalPrice}
             </Typography>
           </Grid>
           <Grid>

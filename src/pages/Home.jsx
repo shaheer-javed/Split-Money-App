@@ -11,13 +11,13 @@ import {
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import ItemsCard from "./components/ItemsCard";
-
+import { useState } from "react";
 
 function Home() {
+  const [totalPrice, SetTotalPrice] = useState(0);
   return (
     <>
-    <ItemsCard/>
-    
+      <ItemsCard SetTotalPrice={SetTotalPrice} totalPrice={totalPrice} />
     </>
   );
 }
