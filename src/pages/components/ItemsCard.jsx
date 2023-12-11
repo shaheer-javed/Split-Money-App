@@ -7,17 +7,33 @@ import {
   Typography,
   TextField,
   Autocomplete,
+  Modal,
+  Box,
+  Grid,
 } from "@mui/material";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-
-import SingleItemBox from "./SingleItemBox";
 import { useEffect, useState } from "react";
+import SingleItemBox from "./SingleItemBox";
+import ExtraChargesModal from "./ExtraChargesModal";
 
-function ItemsCard({ totalPrice, SetTotalPrice }) {
-  const [items, setItems] = useState([
-    { id: crypto.randomUUID(), item: "", amount: 0, name: "" },
-  ]);
+function ItemsCard({
+  totalPrice,
+  SetTotalPrice,
+  groupItems,
+  setGroupItmes,
+  charges,
+  setCharges,
+  SetUserOrder,
+  items,
+  setItems,
+}) {
+  // const [items, setItems] = useState([
+  //   { id: crypto.randomUUID(), item: "", amount: 0, name: "" },
+  // ]);
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const addItem = () => {
     const newItem = {
@@ -41,53 +57,81 @@ function ItemsCard({ totalPrice, SetTotalPrice }) {
       (total, item) => total + parseInt(item.amount),
       0
     );
-    console.log(newItemTotalAmount);
     SetTotalPrice(newItemTotalAmount);
   }, [items]);
 
-  return (
-    <Container maxWidth="md" sx={{ mt: 2 }}>
-      <Card variant="outlined">
-        <CardContent>
-          {items.map((item, index) => {
-            return (
-              <SingleItemBox
-                key={item.id}
-                item={item}
-                index={index}
-                setItems={setItems}
-                deleteItem={deleteItem}
-                SetTotalPrice={SetTotalPrice}
-              />
-            );
-          })}
-        </CardContent>
-        <CardActions>
-          <Button color="primary" onClick={addItem}>
-            Add Items
-          </Button>
-        </CardActions>
-        <hr />
+  function handleGrouping() {
+    const groupedItems = items.reduce((group, item) => {
+      const name = item.name;
+      const existingGroup = group[name];
+      if (existingGroup) {
+        existingGroup.push(item);
+      } else {
+        group[name] = [item];
+      }
+      return group;
+    }, []);
+    setGroupItmes(groupedItems);
+  }
 
-        <Grid container justifyContent="space-between">
-          <Grid>
-            <CardActions>
-              <Button color="primary">Add Expense</Button>
-            </CardActions>
+  return (
+    <>
+      <Container maxWidth="md" sx={{ mt: 2 }}>
+        <Card variant="outlined">
+          <CardContent>
+            {items.map((item, index) => {
+              return (
+                <SingleItemBox
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  setItems={setItems}
+                  deleteItem={deleteItem}
+                  SetTotalPrice={SetTotalPrice}
+                />
+              );
+            })}
+          </CardContent>
+          <CardActions>
+            <Button color="primary" onClick={addItem}>
+              Add Items
+            </Button>
+          </CardActions>
+          <hr />
+
+          <Grid container justifyContent="space-between">
+            <Grid>
+              <CardActions>
+                <Button color="primary" onClick={handleGrouping}>
+                  Add Expense
+                </Button>
+              </CardActions>
+            </Grid>
+            <Grid>
+              <Typography variant="h6" color="error">
+                Total Amount: ${totalPrice}
+              </Typography>
+            </Grid>
+            <Grid>
+              <CardActions>
+                <Button color="primary" onClick={handleOpen}>
+                  Continue
+                </Button>
+              </CardActions>
+            </Grid>
+            <ExtraChargesModal
+              open={open}
+              handleClose={handleClose}
+              totalPrice={totalPrice}
+              charges={charges}
+              setCharges={setCharges}
+              SetUserOrder={SetUserOrder}
+              groupItems={groupItems}
+            />
           </Grid>
-          <Grid>
-            <Typography variant="h6" color="error">
-              Total Amount: ${totalPrice}
-            </Typography>
-          </Grid>
-          <Grid>
-            <CardActions>
-              <Button color="primary">Continue</Button>
-            </CardActions>
-          </Grid>
-        </Grid>
-      </Card>
-    </Container>
+        </Card>
+      </Container>
+    </>
   );
 }
 export default ItemsCard;

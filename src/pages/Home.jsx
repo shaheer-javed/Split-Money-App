@@ -1,23 +1,32 @@
-import {
-  Container,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  TextField,
-  Autocomplete,
-} from "@mui/material";
-
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-
 import ItemsCard from "./components/ItemsCard";
-import { useState } from "react";
+import GroupOrders from "./components/GroupOrders";
 
-function Home() {
-  const [totalPrice, SetTotalPrice] = useState(0);
+function Home({
+  totalPrice,
+  SetTotalPrice,
+  groupItems,
+  setGroupItmes,
+  charges,
+  setCharges,
+  SetUserOrder,
+  items,
+  setItems,
+}) {
   return (
     <>
-      <ItemsCard SetTotalPrice={SetTotalPrice} totalPrice={totalPrice} />
+      <ItemsCard
+        SetTotalPrice={SetTotalPrice}
+        totalPrice={totalPrice}
+        groupItems={groupItems}
+        setGroupItmes={setGroupItmes}
+        charges={charges}
+        setCharges={setCharges}
+        SetUserOrder={SetUserOrder}
+        items={items}
+        setItems={setItems}
+      />
+
+      <GroupOrders groupItems={groupItems} />
     </>
   );
 }

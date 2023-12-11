@@ -22,24 +22,20 @@ const itemList = [
   { label: "Fanta" },
 ];
 
-function SingleItemBox({ item, setItems, index, deleteItem, SetTotalPrice }) {
+function SingleItemBox({ item, setItems, index, deleteItem }) {
   const handleInputChange = (event) => {
     setItems((prevItems) => {
       const newItems = [...prevItems];
       newItems[index][event.target.name] = event.target.value;
       return newItems;
     });
-    // SetTotalPrice((prevPrice) => {
-    //   const newPrice = prevPrice + parseInt(item.amount);
-    //   return newPrice;
-    // });
   };
 
   const handleItemSelectChange = (event) => {
     setItems((prevItems) => {
       const newItems = [...prevItems];
       newItems[index].item = event.target.innerText || event.target.value; // this logic is good dont touch it
-      console.log(newItems);
+      //   console.log(newItems);
       return newItems;
     });
   };
