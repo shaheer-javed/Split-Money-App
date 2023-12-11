@@ -27,11 +27,8 @@ function ItemsCard({
   items,
   setItems,
 }) {
-  // const [items, setItems] = useState([
-  //   { id: crypto.randomUUID(), item: "", amount: 0, name: "" },
-  // ]);
-
   const [open, setOpen] = useState(false);
+  const [proceedCheckout, setProceedCheckout] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -57,10 +54,11 @@ function ItemsCard({
       (total, item) => total + parseInt(item.amount),
       0
     );
-    SetTotalPrice(newItemTotalAmount);
+    SetTotalPrice(newItemTotalAmount.toFixed(2));
   }, [items]);
 
   function handleGrouping() {
+    setProceedCheckout(true);
     const groupedItems = items.reduce((group, item) => {
       const name = item.name;
       const existingGroup = group[name];
@@ -99,7 +97,7 @@ function ItemsCard({
           </CardActions>
           <hr />
 
-          <Grid container justifyContent="space-between">
+          <Grid container justifyContent="space-between" alignItems="center">
             <Grid>
               <CardActions>
                 <Button color="primary" onClick={handleGrouping}>
@@ -114,9 +112,13 @@ function ItemsCard({
             </Grid>
             <Grid>
               <CardActions>
-                <Button color="primary" onClick={handleOpen}>
-                  Continue
-                </Button>
+                {proceedCheckout ? (
+                  <Button color="primary" onClick={handleOpen}>
+                    Continue
+                  </Button>
+                ) : (
+                  <Button disabled>Continue</Button>
+                )}
               </CardActions>
             </Grid>
             <ExtraChargesModal

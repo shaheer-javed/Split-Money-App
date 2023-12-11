@@ -23,7 +23,13 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Navbar />
+        <Navbar
+          setItems={setItems}
+          SetTotalPrice={SetTotalPrice}
+          setGroupItmes={setGroupItmes}
+          SetUserOrder={SetUserOrder}
+          setCharges={setCharges}
+        />
         <Routes>
           <Route
             path="/"

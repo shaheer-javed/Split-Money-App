@@ -50,6 +50,7 @@ function SingleItemBox({ item, setItems, index, deleteItem }) {
             name="item"
             options={itemList}
             sx={{ width: 220 }}
+            // value={item.item}
             renderInput={(params) => <TextField {...params} label="Items" />}
             onChange={(e) => handleItemSelectChange(e)}
             onBlur={(e) => handleItemSelectChange(e)}

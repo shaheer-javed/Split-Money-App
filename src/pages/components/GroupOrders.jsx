@@ -3,19 +3,22 @@ import OrdersCardItems from "./OrdersCardItems";
 
 function GroupOrders({ groupItems }) {
   return (
-    <>
-      <Container maxWidth="lg" sx={{ mt: 2 }}>
+    <Container maxWidth="lg" sx={{ mt: 2 }}>
+      <Grid
+        container
+        // justifyContent="space-evenly"
+      >
         {Object.keys(groupItems).map((key) => {
           const itemArr = groupItems[key];
 
           const newOrderPrice = itemArr.reduce(
-            (total, item) => total + parseInt(item.amount),
+            (total, item) => total + parseFloat(item.amount),
             0
           );
 
           return (
-            <>
-              <Card sx={{ maxWidth: 275 }} key={key}>
+            <Grid item xs={4}>
+              <Card sx={{ maxWidth: 275, my: 2 }} key={key}>
                 <CardContent>
                   <Typography variant="h5" component="div">
                     {key}
@@ -32,11 +35,11 @@ function GroupOrders({ groupItems }) {
                   </Grid>
                 </CardContent>
               </Card>
-            </>
+            </Grid>
           );
         })}
-      </Container>
-    </>
+      </Grid>
+    </Container>
   );
 }
 export default GroupOrders;

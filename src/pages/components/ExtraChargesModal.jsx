@@ -8,6 +8,8 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  FormControl,
+  FormLabel,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -53,7 +55,7 @@ function ExtraChargesModal({
     parseInt(charges.tip) +
     (totalPrice * parseInt(charges.tax)) / 100;
 
-  charges.grandTotal = totalPrice + extraCharges;
+  charges.grandTotal = +totalPrice + extraCharges;
 
   const length = Object.keys(groupItems).length;
 
@@ -65,7 +67,7 @@ function ExtraChargesModal({
         (accumulator, currentElement) => {
           accumulator.name = currentElement.name;
           accumulator.items = accumulator.items.concat(currentElement.item);
-          accumulator.bill += parseInt(currentElement.amount);
+          accumulator.bill += parseFloat(currentElement.amount);
           return accumulator;
         },
         {
@@ -80,17 +82,23 @@ function ExtraChargesModal({
         }
       );
       arr.delivery_tip =
-        (parseInt(charges.delivery) + parseInt(charges.tip)) / length;
+        (parseFloat(charges.delivery) + parseFloat(charges.tip)) / length;
       arr.tax = (arr.bill * parseFloat(charges.tax)) / 100;
+
+      arr.delivery_tip = arr.delivery_tip.toFixed(2);
+      arr.tax = arr.tax.toFixed(2);
       arr.totalBill =
-        parseInt(arr.delivery_tip) + parseFloat(arr.tax) + parseInt(arr.bill);
+        parseFloat(arr.delivery_tip) +
+        parseFloat(arr.tax) +
+        parseFloat(arr.bill);
+
+      arr.totalBill = arr.totalBill.toFixed(2);
 
       arr.remaining = -arr.totalBill;
       SetUserOrder((prevOrderArr) => {
         return [...prevOrderArr, arr];
       });
     });
-
     navigate("/order-summary");
   }
 
@@ -101,7 +109,7 @@ function ExtraChargesModal({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={style} textAlign="center">
         <Typography id="modal-modal-title" variant="h6" component="h2">
           Extra Charges
         </Typography>
@@ -112,6 +120,7 @@ function ExtraChargesModal({
               name="delivery"
               label="Delivery"
               type="number"
+              size="small"
               variant="outlined"
               value={charges.delivery}
               onChange={(e) => handleInputChange(e)}
@@ -124,28 +133,43 @@ function ExtraChargesModal({
               name="tip"
               label="Tip"
               type="number"
+              size="small"
               variant="outlined"
               value={charges.tip}
               onChange={(e) => handleInputChange(e)}
               sx={st}
             />
           </Grid>
-          <Grid item xs={4}>
-            <Typography variant="h6" color="black">
-              GST
-            </Typography>
-          </Grid>
-          <Grid item xs={8}>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="tax"
-              onChange={(e) => handleInputChange(e)}
-            >
-              <FormControlLabel value="16" control={<Radio />} label="16%" />
-              <FormControlLabel value="5" control={<Radio />} label="5%" />
-              <FormControlLabel value="0" control={<Radio />} label="None" />
-            </RadioGroup>
+
+          <Grid container alignItems="center">
+            <Grid item xs={4}>
+              <Typography variant="body1" color="black">
+                GST
+              </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <FormControl>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="tax"
+                  onChange={(e) => handleInputChange(e)}
+                >
+                  <FormControlLabel
+                    value="16"
+                    control={<Radio />}
+                    label="16%"
+                  />
+                  <FormControlLabel value="5" control={<Radio />} label="5%" />
+                  <FormControlLabel
+                    value="0"
+                    control={<Radio />}
+                    label="None"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            {/* </Grid> */}
           </Grid>
 
           <Grid item xs={6}>
@@ -169,7 +193,12 @@ function ExtraChargesModal({
           </Grid>
         </Grid>
 
-        <Button variant="text" color="primary" onClick={handleGenerateBill}>
+        <Button
+          variant="outlined"
+          color="success"
+          sx={{ mt: 2 }}
+          onClick={handleGenerateBill}
+        >
           Generate Summary
         </Button>
       </Box>

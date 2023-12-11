@@ -1,24 +1,13 @@
-import {
-  Container,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  List,
-  Typography,
-  TextField,
-  Autocomplete,
-  Grid,
-} from "@mui/material";
+import { List, Typography, Grid } from "@mui/material";
 
 function OrdersCard({ itemArr }) {
   return (
-    <div>
+    <>
       {itemArr.map((item) => {
         console.log(item);
         return (
           <>
-            <List>
+            <List key={crypto.randomUUID()}>
               <Grid container justifyContent="space-between">
                 <Grid>
                   <Typography variant="span">{item.item}</Typography>
@@ -31,7 +20,7 @@ function OrdersCard({ itemArr }) {
           </>
         );
       })}
-    </div>
+    </>
   );
 }
 export default OrdersCard;
